@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
 import CanvasComponent from '../components/CanvasComponent';
+import { useResponsiveCanvas } from '../hooks';
 import '../styles/shapes.css';
 
 const VISUALIZER_MODES = {
@@ -26,6 +27,7 @@ function AudioVisualizer() {
   const analyserRef = useRef(null);
   const sourceRef = useRef(null);
   const audioRef = useRef(null);
+  const { width: canvasWidth, height: canvasHeight } = useResponsiveCanvas(600, 500);
 
   const [mode, setMode] = useState('bars');
   const [colorMode, setColorMode] = useState('rainbow');
@@ -357,14 +359,16 @@ function AudioVisualizer() {
       <h2>🎵 Audio Visualizer</h2>
       <p>Watch music come to life!</p>
 
-      <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', justifyContent: 'center' }}>
-        <CanvasComponent ref={canvasRef} width={600} height={500} />
+      <div className="visualizer-layout" style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', justifyContent: 'center' }}>
+        <CanvasComponent ref={canvasRef} width={canvasWidth} height={canvasHeight} />
 
         <div className="controls-panel" style={{
           background: 'rgba(255,255,255,0.05)',
           padding: '20px',
           borderRadius: '15px',
-          minWidth: '280px'
+          minWidth: '280px',
+          maxWidth: '100%',
+          flex: '1 1 280px'
         }}>
           <div className="control-group" style={{ marginBottom: '15px' }}>
             <label style={{ display: 'block', marginBottom: '8px', color: '#fff' }}>

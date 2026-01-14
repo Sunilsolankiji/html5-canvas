@@ -65,3 +65,27 @@
   cursor: default;
 }
 
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .app-footer {
+    padding: 20px 15px;
+  }
+
+  .footer-credit {
+    font-size: 0.85rem;
+  }
+
+  .footer-copyright {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-footer {
+    padding: 15px 12px;
+  }
+
+  .footer-credit {
+    font-size: 0.8rem;
+  }
+}

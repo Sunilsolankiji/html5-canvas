@@ -2,6 +2,7 @@ import { useRef, useEffect, useState, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import CanvasComponent from '../components/CanvasComponent';
 import { drawParametricShape } from '../utils/canvasDrawing';
+import { useResponsiveCanvas } from '../hooks';
 import {
     SHAPE_PRESETS,
     SHAPE_CATEGORIES,
@@ -35,6 +36,7 @@ function Playground() {
     const animationRef = useRef(null);
     const isInitialMount = useRef(true);
     const [searchParams] = useSearchParams();
+    const { width: canvasWidth, height: canvasHeight } = useResponsiveCanvas(700, 500);
 
     // Basic settings
     const [activeTab, setActiveTab] = useState('presets');
@@ -974,8 +976,8 @@ function Playground() {
                 <div className="canvas-section">
                     <CanvasComponent
                         ref={canvasRef}
-                        width={700}
-                        height={500}
+                        width={canvasWidth}
+                        height={canvasHeight}
                         backgroundColor={backgroundColor}
                     />
 

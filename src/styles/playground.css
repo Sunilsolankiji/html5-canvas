@@ -365,7 +365,11 @@
 
   .controls-section {
     width: 100%;
-    max-width: 500px;
+    max-width: 600px;
+  }
+
+  .canvas-section {
+    width: 100%;
   }
 }
 
@@ -374,12 +378,142 @@
     font-size: 1.8rem;
   }
 
+  .playground-header p {
+    font-size: 0.9rem;
+    padding: 0 10px;
+  }
+
+  .playground-layout {
+    gap: 20px;
+  }
+
   .controls-section {
-    padding: 20px;
+    padding: 20px 15px;
+    max-width: 100%;
+  }
+
+  .control-tabs {
+    padding: 6px;
+    gap: 5px;
+  }
+
+  .tab-btn {
+    padding: 10px 8px;
+    font-size: 0.85rem;
+  }
+
+  .preset-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .preset-btn {
+    padding: 12px 10px;
+    font-size: 0.85rem;
+  }
+
+  .control-group label {
+    font-size: 0.9rem;
+  }
+
+  .control-group textarea,
+  .control-group input[type="text"] {
+    padding: 12px;
+    font-size: 0.85rem;
+  }
+
+  .color-picker-row {
+    gap: 10px;
+  }
+
+  .color-picker-item input[type="color"] {
+    height: 45px;
+  }
+
+  .toggle-option {
+    padding: 12px;
+  }
+
+  .toggle-option span {
+    font-size: 0.9rem;
+  }
+
+  .quick-actions {
+    gap: 8px;
+  }
+
+  .formula-help {
+    padding: 12px 15px;
+    font-size: 0.85rem;
+  }
+
+  .formula-help ul {
+    font-size: 0.8rem;
+  }
+
+  .export-section {
+    padding: 12px;
+  }
+
+  .btn-export,
+  .btn-reset {
+    padding: 12px;
+    font-size: 0.95rem;
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  .playground-header {
+    margin-bottom: 20px;
+  }
+
+  .playground-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .playground-header p {
+    font-size: 0.85rem;
+  }
+
+  .controls-section {
+    padding: 15px 12px;
+  }
+
+  .control-tabs {
+    flex-wrap: wrap;
+  }
+
+  .tab-btn {
+    flex: 1 1 45%;
+    padding: 10px 6px;
+    font-size: 0.8rem;
   }
 
   .preset-grid {
     grid-template-columns: 1fr;
+  }
+
+  .color-picker-row {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .color-picker-item {
+    width: 100%;
+  }
+
+  .filename-input-group {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .filename-input-group input {
+    width: 100%;
+  }
+
+  .file-extension {
+    text-align: center;
   }
 }
 

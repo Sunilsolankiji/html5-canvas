@@ -3,6 +3,11 @@
   min-height: 100vh;
 }
 
+/* Mobile Header - Hidden on desktop */
+.mobile-header {
+  display: none;
+}
+
 .sidebar {
   width: 260px;
   height: 100dvh;
@@ -17,7 +22,7 @@
   overflow-y: auto;
 }
 
-.sidebar h1 {
+.sidebar .sidebar-title {
   font-size: 1.5rem;
   margin-bottom: 40px;
   text-align: center;
@@ -85,35 +90,152 @@
   transform: translateY(-2px);
 }
 
+.main-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
 .content {
   flex: 1;
   padding: 40px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
 }
 
+/* Menu Overlay */
+.menu-overlay {
+  display: none;
+}
+
+/* Hamburger Button */
+.hamburger {
+  display: none;
+}
+
+/* ============================================
+   TABLET STYLES (max-width: 1024px)
+   ============================================ */
+@media (max-width: 1024px) {
+  .content {
+    padding: 30px;
+  }
+}
+
+/* ============================================
+   MOBILE STYLES (max-width: 768px)
+   ============================================ */
 @media (max-width: 768px) {
   .app {
     flex-direction: column;
   }
 
-  .sidebar {
-    width: 100%;
-    padding: 20px;
-    border-right: none;
+  /* Mobile Header */
+  .mobile-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
   }
 
-  .sidebar h1 {
-    margin-bottom: 20px;
+  .mobile-header h1 {
+    font-size: 1.2rem;
+    background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Hamburger Menu Button */
+  .hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 28px;
+    height: 20px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1002;
+  }
+
+  .hamburger span {
+    display: block;
+    width: 100%;
+    height: 3px;
+    background: #fff;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+  }
+
+  .hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translate(6px, 6px);
+  }
+
+  .hamburger.active span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
+  }
+
+  /* Menu Overlay */
+  .menu-overlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 999;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* Sidebar - Slide out menu on mobile */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    max-width: 85vw;
+    height: 100dvh;
+    z-index: 1001;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    padding: 25px 20px;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar .sidebar-title {
+    margin-bottom: 25px;
+    font-size: 1.3rem;
   }
 
   .nav-list {
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+    flex-direction: column;
+    gap: 5px;
   }
 
   .nav-list li {
@@ -121,16 +243,44 @@
   }
 
   .nav-link {
-    padding: 10px 15px;
-    font-size: 0.9rem;
+    padding: 14px 20px;
+    font-size: 1rem;
+  }
+
+  .nav-link:hover {
+    transform: none;
   }
 
   .sidebar-footer {
-    display: none;
+    margin-top: auto;
+    padding-top: 15px;
+  }
+
+  /* Content */
+  .content {
+    padding: 20px 15px;
+  }
+}
+
+/* ============================================
+   SMALL MOBILE STYLES (max-width: 480px)
+   ============================================ */
+@media (max-width: 480px) {
+  .mobile-header {
+    padding: 12px 15px;
+  }
+
+  .mobile-header h1 {
+    font-size: 1rem;
+  }
+
+  .sidebar {
+    width: 100%;
+    max-width: 100%;
   }
 
   .content {
-    padding: 20px;
+    padding: 15px 12px;
   }
 }
 

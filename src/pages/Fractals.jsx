@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
 import CanvasComponent from '../components/CanvasComponent';
+import { useResponsiveCanvas } from '../hooks';
 import '../styles/shapes.css';
 
 const FRACTAL_TYPES = {
@@ -56,6 +57,7 @@ const COLOR_SCHEMES = {
 
 function Fractals() {
   const canvasRef = useRef(null);
+  const { width: canvasWidth, height: canvasHeight } = useResponsiveCanvas(600, 500);
   const [fractalType, setFractalType] = useState('mandelbrot');
   const [juliaC, setJuliaC] = useState({ real: -0.7, imag: 0.27015 });
   const [maxIterations, setMaxIterations] = useState(100);
@@ -330,7 +332,7 @@ function Fractals() {
 
       <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', justifyContent: 'center' }}>
         <div onClick={handleCanvasClick} style={{ cursor: 'crosshair' }}>
-          <CanvasComponent ref={canvasRef} width={600} height={500} />
+          <CanvasComponent ref={canvasRef} width={canvasWidth} height={canvasHeight} />
         </div>
 
         <div className="controls-panel" style={{

@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
 import CanvasComponent from '../components/CanvasComponent';
 import { animateHeart } from '../utils/heartDrawing';
+import { useResponsiveCanvas } from '../hooks';
 import { COLORS } from '../constants';
 import '../styles/shapes.css';
 
@@ -8,22 +9,25 @@ function Heart() {
   const canvasRef = useRef(null);
   const animationRef = useRef(null);
   const [isAnimating, setIsAnimating] = useState(true);
+  const { width, height } = useResponsiveCanvas(600, 500);
 
   const startAnimation = useCallback(() => {
     const canvas = canvasRef.current?.getCanvas();
     const ctx = canvasRef.current?.getContext();
 
     if (canvas && ctx) {
+      // Scale the heart based on canvas size
+      const baseScale = Math.min(width, height) / 40;
       animateHeart({
         canvas,
         ctx,
-        baseScale: 15,
+        baseScale,
         animationRef,
         strokeColor: COLORS.HEART_STROKE,
         fillColor: COLORS.HEART_FILL,
       });
     }
-  }, []);
+  }, [width, height]);
 
   useEffect(() => {
     if (isAnimating) {
@@ -50,7 +54,7 @@ function Heart() {
     <div className="shape-page">
       <h2>❤️ Animated Heart</h2>
       <p>Watch the heart draw, fill, and pulse with love!</p>
-      <CanvasComponent ref={canvasRef} width={600} height={500} />
+      <CanvasComponent ref={canvasRef} width={width} height={height} />
       <div className="controls">
         <button className="btn btn-primary" onClick={handleRestart}>
           🔄 Restart Animation
