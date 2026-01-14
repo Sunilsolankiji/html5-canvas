@@ -1,0 +1,77 @@
+.home-page {
+  text-align: center;
+}
+
+.home-page h2 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.home-page .subtitle {
+  font-size: 1.2rem;
+  color: #b0b0b0;
+  margin-bottom: 40px;
+}
+
+.shape-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-top: 40px;
+}
+
+.shape-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.shape-card:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.shape-card .icon {
+  font-size: 3rem;
+  margin-bottom: 15px;
+}
+
+.shape-card h3 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.shape-card p {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.shape-card.featured {
+  background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(72, 219, 251, 0.2));
+  border: 2px solid rgba(255, 107, 107, 0.4);
+  grid-column: span 2;
+}
+
+.shape-card.featured:hover {
+  box-shadow: 0 20px 40px rgba(255, 107, 107, 0.2);
+}
+
+@media (max-width: 768px) {
+  .home-page h2 {
+    font-size: 2rem;
+  }
+
+  .shape-card.featured {
+    grid-column: span 1;
+  }
+}
+
