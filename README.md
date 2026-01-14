@@ -105,6 +105,20 @@ react-canvas/
 | `npm run lint` | Run ESLint |
 | `npm run lint:fix` | Fix ESLint issues |
 
+## 🚀 Deployment
+
+This project is configured for automatic deployment to GitHub Pages using GitHub Actions.
+
+### Setup GitHub Pages
+1. Go to your repository Settings → Pages
+2. Set Source to "GitHub Actions"
+3. Push to the `main` branch to trigger deployment
+
+### Live Demo
+Once deployed, your app will be available at: `https://Sunilsolankiji.github.io/html5-canvas/`
+
+For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md).
+
 ## 📄 License
 
 MIT
