@@ -11,7 +11,7 @@ This repository is configured to automatically deploy to GitHub Pages using GitH
    - Save the settings
 
 2. **Configure Repository Name**:
-   - If your repository name is different from "react-canvas", update the `base` path in `vite.config.js`:
+   - If your repository name is different from "html5-canvas", update the `base` path in `vite.config.js`:
    ```javascript
    base: process.env.NODE_ENV === 'production' ? '/your-repo-name/' : '/',
    ```
@@ -19,7 +19,7 @@ This repository is configured to automatically deploy to GitHub Pages using GitH
 3. **Deploy**:
    - Push your changes to the `main` branch
    - GitHub Actions will automatically build and deploy your app
-   - Your site will be available at: `https://yourusername.github.io/react-canvas/`
+   - Your site will be available at: `https://Sunilsolankiji.github.io/html5-canvas/`
 
 ## Manual Deployment
 
