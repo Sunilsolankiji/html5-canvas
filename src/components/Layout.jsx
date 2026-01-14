@@ -60,7 +60,7 @@ function Layout() {
                 </ul>
                 <div className="sidebar-footer">
                     <a
-                        href="https://github.com/sunilsolanki"
+                        href="https://github.com/Sunilsolankiji/html5-canvas/"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="github-link"

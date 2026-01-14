@@ -55,7 +55,12 @@ function Spiral() {
     <div className="shape-page">
       <h2>🌀 Rainbow Spiral</h2>
       <p>A mesmerizing spiral with rainbow colors!</p>
-      <CanvasComponent ref={canvasRef} width={width} height={height} />
+      <CanvasComponent
+        key={`${width}-${height}`}
+        ref={canvasRef}
+        width={width}
+        height={height}
+      />
       <div className="controls">
         <button className="btn btn-primary" onClick={handleRestart}>
           🔄 Restart Animation

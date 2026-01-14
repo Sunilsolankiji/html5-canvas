@@ -360,7 +360,12 @@ function AudioVisualizer() {
       <p>Watch music come to life!</p>
 
       <div className="visualizer-layout" style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', justifyContent: 'center' }}>
-        <CanvasComponent ref={canvasRef} width={canvasWidth} height={canvasHeight} />
+        <CanvasComponent
+          key={`${canvasWidth}-${canvasHeight}`}
+          ref={canvasRef}
+          width={canvasWidth}
+          height={canvasHeight}
+        />
 
         <div className="controls-panel" style={{
           background: 'rgba(255,255,255,0.05)',

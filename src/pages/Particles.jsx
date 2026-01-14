@@ -31,6 +31,9 @@ function Particles() {
   }, [width, height]);
 
   useEffect(() => {
+    // Reset particles when dimensions change
+    particlesRef.current = [];
+
     if (isAnimating) {
       startAnimation();
     }
@@ -41,7 +44,7 @@ function Particles() {
         cancelAnimationFrame(currentAnimationRef);
       }
     };
-  }, [isAnimating, startAnimation]);
+  }, [isAnimating, startAnimation, width, height]);
 
   const handleMouseMove = useCallback((e) => {
     const canvas = canvasRef.current?.getCanvas();
@@ -86,7 +89,12 @@ function Particles() {
         onTouchMove={handleTouchMove}
         onTouchEnd={handleMouseLeave}
       >
-        <CanvasComponent ref={canvasRef} width={width} height={height} />
+        <CanvasComponent
+          key={`${width}-${height}`}
+          ref={canvasRef}
+          width={width}
+          height={height}
+        />
       </div>
       <div className="controls">
         <button className="btn btn-primary" onClick={handleRestart}>

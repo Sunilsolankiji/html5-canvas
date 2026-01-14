@@ -49,7 +49,12 @@ function Wave() {
     <div className="shape-page">
       <h2>🌊 Ocean Waves</h2>
       <p>Relaxing animated waves with multiple layers!</p>
-      <CanvasComponent ref={canvasRef} width={width} height={height} />
+      <CanvasComponent
+        key={`${width}-${height}`}
+        ref={canvasRef}
+        width={width}
+        height={height}
+      />
       <div className="controls">
         <button className="btn btn-primary" onClick={handleRestart}>
           🔄 Reset Waves

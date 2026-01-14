@@ -1,4 +1,30 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+
+/**
+ * Calculate responsive dimensions based on viewport
+ */
+function calculateResponsiveDimensions(baseWidth, baseHeight, padding) {
+  // Check if we're in a browser environment
+  if (typeof window === 'undefined') {
+    return { width: baseWidth, height: baseHeight };
+  }
+
+  const viewportWidth = window.innerWidth;
+  const maxWidth = viewportWidth - padding;
+
+  if (maxWidth < baseWidth) {
+    const scale = maxWidth / baseWidth;
+    return {
+      width: Math.floor(maxWidth),
+      height: Math.floor(baseHeight * scale),
+    };
+  }
+
+  return {
+    width: baseWidth,
+    height: baseHeight,
+  };
+}
 
 /**
  * Custom hook to get responsive canvas dimensions based on viewport size
@@ -8,35 +34,43 @@ import { useState, useEffect } from 'react';
  * @returns {{ width: number, height: number }} - Responsive canvas dimensions
  */
 export function useResponsiveCanvas(baseWidth = 600, baseHeight = 500, padding = 40) {
-  const [dimensions, setDimensions] = useState({
-    width: baseWidth,
-    height: baseHeight,
-  });
+  // Calculate initial dimensions synchronously to avoid flash
+  const [dimensions, setDimensions] = useState(() =>
+    calculateResponsiveDimensions(baseWidth, baseHeight, padding)
+  );
+
+  const updateDimensions = useCallback(() => {
+    const newDimensions = calculateResponsiveDimensions(baseWidth, baseHeight, padding);
+    setDimensions(prev => {
+      // Only update if dimensions actually changed
+      if (prev.width !== newDimensions.width || prev.height !== newDimensions.height) {
+        return newDimensions;
+      }
+      return prev;
+    });
+  }, [baseWidth, baseHeight, padding]);
 
   useEffect(() => {
-    const calculateDimensions = () => {
-      const viewportWidth = window.innerWidth;
-      const maxWidth = viewportWidth - padding;
+    // Update on mount in case SSR dimensions differ
+    updateDimensions();
 
-      if (maxWidth < baseWidth) {
-        const scale = maxWidth / baseWidth;
-        setDimensions({
-          width: Math.floor(maxWidth),
-          height: Math.floor(baseHeight * scale),
-        });
-      } else {
-        setDimensions({
-          width: baseWidth,
-          height: baseHeight,
-        });
-      }
+    // Debounce resize handler to prevent excessive re-renders
+    let resizeTimeout;
+    const handleResize = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(updateDimensions, 100);
     };
 
-    calculateDimensions();
-    window.addEventListener('resize', calculateDimensions);
+    window.addEventListener('resize', handleResize);
+    // Also listen for orientation change on mobile
+    window.addEventListener('orientationchange', updateDimensions);
 
-    return () => window.removeEventListener('resize', calculateDimensions);
-  }, [baseWidth, baseHeight, padding]);
+    return () => {
+      clearTimeout(resizeTimeout);
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', updateDimensions);
+    };
+  }, [updateDimensions]);
 
   return dimensions;
 }

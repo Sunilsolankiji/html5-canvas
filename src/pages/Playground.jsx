@@ -311,16 +311,23 @@ function Playground() {
             ctx.shadowBlur = 0;
         }
 
+        // Calculate scale factor based on canvas size relative to base size (700x500)
+        const baseWidth = 700;
+        const baseHeight = 500;
+        const scaleFactor = Math.min(canvas.width / baseWidth, canvas.height / baseHeight);
+        const adjustedScale = scale * scaleFactor;
+        const adjustedLineWidth = Math.max(1, lineWidth * scaleFactor);
+
         drawParametricShape({
             canvas,
             ctx,
             xFunction,
             yFunction,
-            scale,
+            scale: adjustedScale,
             tEnd,
             strokeColor,
             fillColor,
-            lineWidth,
+            lineWidth: adjustedLineWidth,
             showFill,
             animated,
             animateDrawing,
@@ -329,7 +336,7 @@ function Playground() {
             isPausedRef,
             lineDash,
             showGlow,
-            glowIntensity,
+            glowIntensity: Math.max(5, glowIntensity * scaleFactor),
             showTrail,
             showPathTracer,
             useGradient,
@@ -343,20 +350,25 @@ function Playground() {
         setError('');
     }, [xFunction, yFunction, scale, tEnd, strokeColor, fillColor, lineWidth,
         showFill, animateDrawing, animationSpeed, lineStyle, showGlow, glowIntensity,
-        showTrail, showPathTracer, showGrid, showFormula, useGradient, selectedGradient, backgroundColor]);
+        showTrail, showPathTracer, showGrid, showFormula, useGradient, selectedGradient, backgroundColor,
+        canvasWidth, canvasHeight]);
 
-    // Initial draw on mount only
+    // Initial draw on mount and when canvas dimensions are set
     useEffect(() => {
-        drawShape();
+        // Small delay to ensure canvas is mounted with correct dimensions
+        const timer = setTimeout(() => {
+            drawShape();
+        }, 50);
 
         const currentAnimationRef = animationRef.current;
         return () => {
+            clearTimeout(timer);
             if (currentAnimationRef) {
                 cancelAnimationFrame(currentAnimationRef);
             }
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [canvasWidth, canvasHeight]);
 
     // Auto-refresh when values change (skip initial mount)
     useEffect(() => {
@@ -670,6 +682,7 @@ function Playground() {
                 ))}
 
                 <CanvasComponent
+                    key={`shared-${Math.min(window.innerWidth - 40, 800)}-${Math.min(window.innerHeight - (displayMessage ? 120 : 40), 600)}`}
                     ref={canvasRef}
                     width={Math.min(window.innerWidth - 40, 800)}
                     height={Math.min(window.innerHeight - (displayMessage ? 120 : 40), 600)}
@@ -975,6 +988,7 @@ function Playground() {
             <div className="playground-layout">
                 <div className="canvas-section">
                     <CanvasComponent
+                        key={`${canvasWidth}-${canvasHeight}`}
                         ref={canvasRef}
                         width={canvasWidth}
                         height={canvasHeight}

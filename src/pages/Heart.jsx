@@ -54,7 +54,12 @@ function Heart() {
     <div className="shape-page">
       <h2>❤️ Animated Heart</h2>
       <p>Watch the heart draw, fill, and pulse with love!</p>
-      <CanvasComponent ref={canvasRef} width={width} height={height} />
+      <CanvasComponent
+        key={`${width}-${height}`}
+        ref={canvasRef}
+        width={width}
+        height={height}
+      />
       <div className="controls">
         <button className="btn btn-primary" onClick={handleRestart}>
           🔄 Restart Animation

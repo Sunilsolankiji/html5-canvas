@@ -332,7 +332,12 @@ function Fractals() {
 
       <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', justifyContent: 'center' }}>
         <div onClick={handleCanvasClick} style={{ cursor: 'crosshair' }}>
-          <CanvasComponent ref={canvasRef} width={canvasWidth} height={canvasHeight} />
+          <CanvasComponent
+            key={`${canvasWidth}-${canvasHeight}`}
+            ref={canvasRef}
+            width={canvasWidth}
+            height={canvasHeight}
+          />
         </div>
 
         <div className="controls-panel" style={{

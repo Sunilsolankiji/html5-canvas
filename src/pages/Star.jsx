@@ -52,7 +52,12 @@ function Star() {
     <div className="shape-page">
       <h2>⭐ Glowing Star</h2>
       <p>A beautiful star that draws itself and glows!</p>
-      <CanvasComponent ref={canvasRef} width={width} height={height} />
+      <CanvasComponent
+        key={`${width}-${height}`}
+        ref={canvasRef}
+        width={width}
+        height={height}
+      />
       <div className="controls">
         <button className="btn btn-primary" onClick={handleRestart}>
           🔄 Restart Animation
