@@ -1,0 +1,67 @@
+.app-footer {
+  margin-top: auto;
+  padding: 25px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.3));
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer-credit {
+  margin: 0;
+  color: #888;
+  font-size: 0.95rem;
+}
+
+.footer-credit .heart {
+  display: inline-block;
+  animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+@keyframes heartbeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+.footer-credit .author-name {
+  background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #ff6b6b);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: bold;
+  animation: gradient-shift 3s ease infinite;
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.footer-copyright {
+  margin: 8px 0 0 0;
+  color: #555;
+  font-size: 0.8rem;
+}
+
+/* Hover effect on author name */
+.footer-credit .author-name:hover {
+  animation: gradient-shift 1s ease infinite;
+  cursor: default;
+}
+

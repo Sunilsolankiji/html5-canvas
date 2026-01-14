@@ -429,11 +429,24 @@ function Gallery() {
                   ...(selectedItem.preset && { preset: selectedItem.preset }),
                   ...(selectedItem.xFunction && { x: selectedItem.xFunction }),
                   ...(selectedItem.yFunction && { y: selectedItem.yFunction }),
-                  ...(selectedItem.scale && { s: selectedItem.scale }),
-                  ...(selectedItem.tEnd && { t: selectedItem.tEnd }),
+                  ...(selectedItem.scale && { s: selectedItem.scale.toString() }),
+                  ...(selectedItem.tEnd && { t: selectedItem.tEnd.toString() }),
                   ...(selectedItem.colors?.stroke && { sc: selectedItem.colors.stroke }),
                   ...(selectedItem.colors?.fill && { fc: selectedItem.colors.fill }),
                   ...(selectedItem.colors?.background && { bg: selectedItem.colors.background }),
+                  // Include all saved settings
+                  ...(selectedItem.settings?.lineWidth && { lw: selectedItem.settings.lineWidth.toString() }),
+                  ...(selectedItem.settings?.lineStyle && { ls: selectedItem.settings.lineStyle }),
+                  ...(selectedItem.settings?.showFill !== undefined && { sf: selectedItem.settings.showFill ? '1' : '0' }),
+                  ...(selectedItem.settings?.showGlow !== undefined && { sg: selectedItem.settings.showGlow ? '1' : '0' }),
+                  ...(selectedItem.settings?.glowIntensity && { gi: selectedItem.settings.glowIntensity.toString() }),
+                  ...(selectedItem.settings?.showTrail !== undefined && { st: selectedItem.settings.showTrail ? '1' : '0' }),
+                  ...(selectedItem.settings?.showPathTracer !== undefined && { sp: selectedItem.settings.showPathTracer ? '1' : '0' }),
+                  ...(selectedItem.settings?.showGrid !== undefined && { gr: selectedItem.settings.showGrid ? '1' : '0' }),
+                  ...(selectedItem.settings?.showFormula !== undefined && { fo: selectedItem.settings.showFormula ? '1' : '0' }),
+                  ...(selectedItem.settings?.useGradient !== undefined && { ug: selectedItem.settings.useGradient ? '1' : '0' }),
+                  ...(selectedItem.settings?.selectedGradient && { gp: selectedItem.settings.selectedGradient }),
+                  ...(selectedItem.settings?.animationSpeed && { as: selectedItem.settings.animationSpeed.toString() }),
                 }).toString()}`}
                 className="btn btn-primary"
                 style={{ flex: 1, textAlign: 'center' }}
