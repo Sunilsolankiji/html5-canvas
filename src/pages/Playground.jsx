@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState, useCallback } from 'react';
+import { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import CanvasComponent from '../components/CanvasComponent';
 import { drawParametricShape } from '../utils/canvasDrawing';
@@ -92,6 +92,23 @@ function Playground() {
     const [displaySurprise, setDisplaySurprise] = useState(false);
     const [giftRevealed, setGiftRevealed] = useState(false);
     const [previewKey, setPreviewKey] = useState(0);
+
+    // Memoized random data for confetti effects (prevents re-renders from regenerating values)
+    const confettiData = useMemo(() => [...Array(50)].map((_, i) => ({
+        left: Math.random() * 100,
+        duration: 2 + Math.random() * 3,
+        delay: Math.random() * 0.5,
+    })), []);
+
+    const sparkleData = useMemo(() => [...Array(15)].map(() => ({
+        left: 10 + Math.random() * 80,
+        top: 10 + Math.random() * 80,
+        delay: Math.random() * 2,
+    })), []);
+
+    const heartData = useMemo(() => [...Array(10)].map(() => ({
+        left: 10 + Math.random() * 80,
+    })), []);
 
     const isPausedRef = useRef(isPaused);
 
@@ -370,6 +387,18 @@ function Playground() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [canvasWidth, canvasHeight]);
 
+    // Redraw when gift is revealed in shared view to ensure canvas is not cleared
+    useEffect(() => {
+        if (isSharedView && giftRevealed) {
+            // Small delay to let confetti effects render first
+            const timer = setTimeout(() => {
+                drawShape(false); // Don't animate, just draw immediately
+            }, 100);
+            return () => clearTimeout(timer);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [giftRevealed, isSharedView]);
+
     // Auto-refresh when values change (skip initial mount)
     useEffect(() => {
         if (isInitialMount.current) {
@@ -642,38 +671,38 @@ function Playground() {
             `}
                     </style>
                 )}
-                {displaySurprise && giftRevealed && [...Array(50)].map((_, i) => (
+                {displaySurprise && giftRevealed && confettiData.map((data, i) => (
                     <div
                         key={`confetti-${i}`}
                         className="confetti"
                         style={{
-                            left: `${Math.random() * 100}%`,
+                            left: `${data.left}%`,
                             background: ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff', '#5f27cd'][i % 6],
                             borderRadius: i % 3 === 0 ? '50%' : '0',
-                            animationDuration: `${2 + Math.random() * 3}s`,
-                            animationDelay: `${Math.random() * 0.5}s`,
+                            animationDuration: `${data.duration}s`,
+                            animationDelay: `${data.delay}s`,
                         }}
                     />
                 ))}
-                {displaySurprise && giftRevealed && [...Array(15)].map((_, i) => (
+                {displaySurprise && giftRevealed && sparkleData.map((data, i) => (
                     <div
                         key={`sparkle-${i}`}
                         className="sparkle"
                         style={{
-                            left: `${10 + Math.random() * 80}%`,
-                            top: `${10 + Math.random() * 80}%`,
-                            animationDelay: `${Math.random() * 2}s`,
+                            left: `${data.left}%`,
+                            top: `${data.top}%`,
+                            animationDelay: `${data.delay}s`,
                         }}
                     >
                         ✨
                     </div>
                 ))}
-                {displaySurprise && giftRevealed && [...Array(10)].map((_, i) => (
+                {displaySurprise && giftRevealed && heartData.map((data, i) => (
                     <div
                         key={`heart-${i}`}
                         className="heart-float"
                         style={{
-                            left: `${10 + Math.random() * 80}%`,
+                            left: `${data.left}%`,
                             animationDelay: `${i * 0.5}s`,
                         }}
                     >
@@ -1577,12 +1606,12 @@ function Playground() {
                         60% { transform: translateX(5px) rotate(1deg); }
                         100% { opacity: 1; transform: translateX(0) rotate(0); }
                       }
-                      @keyframes previewScale {
+                      @keyframes previewFadeScale {
                         0% { opacity: 0; transform: scale(0); }
                         50% { transform: scale(1.1); }
                         100% { opacity: 1; transform: scale(1); }
                       }
-                      @keyframes previewSlide {
+                      @keyframes previewSlideUp {
                         0% { opacity: 0; transform: translateY(30px); }
                         100% { opacity: 1; transform: translateY(0); }
                       }
