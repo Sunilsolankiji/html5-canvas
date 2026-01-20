@@ -6,7 +6,7 @@ import {
     LINE_STYLES,
     GRADIENT_PRESETS,
 } from '../../constants';
-import { MESSAGE_ANIMATIONS } from './constants';
+import { MESSAGE_ANIMATIONS, CUSTOM_ANIMATIONS, ANIMATION_TIMING_OPTIONS } from './constants';
 
 /**
  * Tab navigation component
@@ -322,6 +322,10 @@ export function EffectsTab({
     showFormula, setShowFormula,
     useGradient, setUseGradient,
     selectedGradient, setSelectedGradient,
+    customAnimation, setCustomAnimation,
+    animationIntensity, setAnimationIntensity,
+    animationDirection, setAnimationDirection,
+    animationTiming, setAnimationTiming,
 }) {
     return (
         <div className="tab-content">
@@ -410,6 +414,120 @@ export function EffectsTab({
                     </div>
                 </div>
             )}
+
+            {/* Custom Animation Section */}
+            <div style={{
+                marginTop: '20px',
+                padding: '15px',
+                background: 'linear-gradient(135deg, rgba(255,107,107,0.1), rgba(72,219,251,0.1))',
+                borderRadius: '12px',
+                border: '1px solid rgba(255,255,255,0.1)'
+            }}>
+                <h4 style={{ margin: '0 0 15px 0', color: '#feca57', fontSize: '0.95rem' }}>
+                    🎬 Custom Animation
+                </h4>
+
+                <div className="control-group">
+                    <label>Animation Type:</label>
+                    <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '8px' }}>
+                        {CUSTOM_ANIMATIONS.map((anim) => (
+                            <button
+                                key={anim.key}
+                                className={`preset-btn ${customAnimation === anim.key ? 'active' : ''}`}
+                                style={{
+                                    padding: '8px 12px',
+                                    fontSize: '0.75rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '4px',
+                                    transition: 'all 0.2s ease',
+                                }}
+                                onClick={() => setCustomAnimation(anim.key)}
+                                title={anim.description}
+                            >
+                                <span>{anim.icon}</span>
+                                <span>{anim.name}</span>
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                {customAnimation && customAnimation !== 'none' && (
+                    <>
+                        <div className="control-group" style={{ marginTop: '15px' }}>
+                            <label>
+                                Intensity: <span className="value-badge">{animationIntensity.toFixed(1)}x</span>
+                            </label>
+                            <input
+                                type="range"
+                                min="0.1"
+                                max="3"
+                                step="0.1"
+                                value={animationIntensity}
+                                onChange={(e) => setAnimationIntensity(Number(e.target.value))}
+                            />
+                        </div>
+
+                        <div className="control-group" style={{ marginTop: '10px' }}>
+                            <label>Direction:</label>
+                            <div style={{ display: 'flex', gap: '10px', marginTop: '5px' }}>
+                                <button
+                                    className={`preset-btn ${animationDirection === 1 ? 'active' : ''}`}
+                                    style={{ padding: '8px 16px', fontSize: '0.8rem' }}
+                                    onClick={() => setAnimationDirection(1)}
+                                >
+                                    ▶️ Forward
+                                </button>
+                                <button
+                                    className={`preset-btn ${animationDirection === -1 ? 'active' : ''}`}
+                                    style={{ padding: '8px 16px', fontSize: '0.8rem' }}
+                                    onClick={() => setAnimationDirection(-1)}
+                                >
+                                    ◀️ Reverse
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="control-group" style={{ marginTop: '15px' }}>
+                            <label>Animation Timing:</label>
+                            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '8px' }}>
+                                {ANIMATION_TIMING_OPTIONS.map((timing) => (
+                                    <button
+                                        key={timing.key}
+                                        className={`preset-btn ${animationTiming === timing.key ? 'active' : ''}`}
+                                        style={{
+                                            padding: '8px 12px',
+                                            fontSize: '0.75rem',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '4px',
+                                            transition: 'all 0.2s ease',
+                                        }}
+                                        onClick={() => setAnimationTiming(timing.key)}
+                                        title={timing.description}
+                                    >
+                                        <span>{timing.icon}</span>
+                                        <span>{timing.name}</span>
+                                    </button>
+                                ))}
+                            </div>
+                            <small style={{ color: '#888', fontSize: '0.7rem', marginTop: '5px', display: 'block' }}>
+                                {ANIMATION_TIMING_OPTIONS.find(t => t.key === animationTiming)?.description}
+                            </small>
+                        </div>
+
+                        <p style={{
+                            color: '#888',
+                            fontSize: '0.75rem',
+                            marginTop: '12px',
+                            fontStyle: 'italic',
+                            margin: '12px 0 0 0'
+                        }}>
+                            💡 {CUSTOM_ANIMATIONS.find(a => a.key === customAnimation)?.description}
+                        </p>
+                    </>
+                )}
+            </div>
         </div>
     );
 }

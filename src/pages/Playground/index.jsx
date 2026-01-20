@@ -114,7 +114,9 @@ function Playground() {
         state.strokeColor, state.fillColor, state.backgroundColor,
         state.lineWidth, state.showFill, state.autoRefresh, state.lineStyle,
         state.showGlow, state.glowIntensity, state.showGrid, state.showFormula,
-        state.useGradient, state.selectedGradient, state.animateDrawing
+        state.useGradient, state.selectedGradient, state.animateDrawing,
+        state.customAnimation, state.animationIntensity, state.animationDirection,
+        state.animationTiming
     ]);
 
     // Filter presets by category
@@ -250,6 +252,14 @@ function Playground() {
                             setUseGradient={state.setUseGradient}
                             selectedGradient={state.selectedGradient}
                             setSelectedGradient={state.setSelectedGradient}
+                            customAnimation={state.customAnimation}
+                            setCustomAnimation={state.setCustomAnimation}
+                            animationIntensity={state.animationIntensity}
+                            setAnimationIntensity={state.setAnimationIntensity}
+                            animationDirection={state.animationDirection}
+                            setAnimationDirection={state.setAnimationDirection}
+                            animationTiming={state.animationTiming}
+                            setAnimationTiming={state.setAnimationTiming}
                         />
                     )}
 
