@@ -61,6 +61,12 @@ export function usePlaygroundState() {
     const [messageAnimation, setMessageAnimation] = useState('reveal');
     const [showSurprise, setShowSurprise] = useState(false);
 
+    // Music settings
+    const [musicUrl, setMusicUrl] = useState('');
+    const [musicStartTime, setMusicStartTime] = useState(0);
+    const [musicEndTime, setMusicEndTime] = useState(60);
+    const [musicEnabled, setMusicEnabled] = useState(false);
+
     // UI state
     const [error, setError] = useState('');
     const [showTutorial, setShowTutorial] = useState(false);
@@ -75,6 +81,9 @@ export function usePlaygroundState() {
     const [displayMessageAnimation, setDisplayMessageAnimation] = useState('reveal');
     const [displaySurprise, setDisplaySurprise] = useState(false);
     const [giftRevealed, setGiftRevealed] = useState(false);
+    const [displayMusicUrl, setDisplayMusicUrl] = useState('');
+    const [displayMusicStartTime, setDisplayMusicStartTime] = useState(0);
+    const [displayMusicEndTime, setDisplayMusicEndTime] = useState(60);
 
     return {
         // Basic settings
@@ -124,6 +133,12 @@ export function usePlaygroundState() {
         messageAnimation, setMessageAnimation,
         showSurprise, setShowSurprise,
 
+        // Music settings
+        musicUrl, setMusicUrl,
+        musicStartTime, setMusicStartTime,
+        musicEndTime, setMusicEndTime,
+        musicEnabled, setMusicEnabled,
+
         // UI state
         error, setError,
         showTutorial, setShowTutorial,
@@ -138,6 +153,9 @@ export function usePlaygroundState() {
         displayMessageAnimation, setDisplayMessageAnimation,
         displaySurprise, setDisplaySurprise,
         giftRevealed, setGiftRevealed,
+        displayMusicUrl, setDisplayMusicUrl,
+        displayMusicStartTime, setDisplayMusicStartTime,
+        displayMusicEndTime, setDisplayMusicEndTime,
     };
 }
 
@@ -154,6 +172,7 @@ export function useUrlParams(state) {
         setUseGradient, setSelectedGradient, setAnimationSpeed,
         setDisplayMessage, setDisplayMessageAnimation, setDisplaySurprise,
         setCustomAnimation, setAnimationIntensity, setAnimationDirection, setAnimationTiming,
+        setDisplayMusicUrl, setDisplayMusicStartTime, setDisplayMusicEndTime,
     } = state;
 
     useEffect(() => {
@@ -244,6 +263,20 @@ export function useUrlParams(state) {
         const surpriseParam = searchParams.get('sur');
         if (surpriseParam === '1') {
             setDisplaySurprise(true);
+        }
+
+        // Music parameters
+        const musicUrlParam = searchParams.get('mu');
+        if (musicUrlParam) {
+            setDisplayMusicUrl(decodeURIComponent(musicUrlParam));
+        }
+        const musicStartParam = searchParams.get('mst');
+        if (musicStartParam) {
+            setDisplayMusicStartTime(parseFloat(musicStartParam));
+        }
+        const musicEndParam = searchParams.get('met');
+        if (musicEndParam) {
+            setDisplayMusicEndTime(parseFloat(musicEndParam));
         }
 
         return () => {
@@ -504,6 +537,9 @@ export function usePlaygroundActions(canvasRef, animationRef, state, drawShape, 
             ...(state.shareMessage && { msg: encodeURIComponent(state.shareMessage) }),
             ...(state.shareMessage && { ma: state.messageAnimation }),
             ...(state.showSurprise && { sur: '1' }),
+            ...(state.musicEnabled && state.musicUrl && { mu: encodeURIComponent(state.musicUrl) }),
+            ...(state.musicEnabled && state.musicUrl && { mst: state.musicStartTime.toString() }),
+            ...(state.musicEnabled && state.musicUrl && { met: state.musicEndTime.toString() }),
         });
 
         const url = `${window.location.origin}${window.location.pathname}#/playground?${params.toString()}`;

@@ -7,6 +7,7 @@ import {
     GRADIENT_PRESETS,
 } from '../../constants';
 import { MESSAGE_ANIMATIONS, CUSTOM_ANIMATIONS, ANIMATION_TIMING_OPTIONS } from './constants';
+import { MusicConfig } from './BackgroundMusic';
 
 /**
  * Tab navigation component
@@ -609,6 +610,10 @@ export function ShareTab({
     showSurprise, setShowSurprise,
     previewKey, setPreviewKey,
     handleCopyShareLink,
+    musicUrl, setMusicUrl,
+    musicStartTime, setMusicStartTime,
+    musicEndTime, setMusicEndTime,
+    musicEnabled, setMusicEnabled,
 }) {
     return (
         <div className="tab-content">
@@ -680,6 +685,18 @@ export function ShareTab({
             <SurpriseToggle
                 showSurprise={showSurprise}
                 setShowSurprise={setShowSurprise}
+            />
+
+            {/* Music Configuration */}
+            <MusicConfig
+                musicUrl={musicUrl}
+                setMusicUrl={setMusicUrl}
+                musicStartTime={musicStartTime}
+                setMusicStartTime={setMusicStartTime}
+                musicEndTime={musicEndTime}
+                setMusicEndTime={setMusicEndTime}
+                musicEnabled={musicEnabled}
+                setMusicEnabled={setMusicEnabled}
             />
 
             <button

@@ -137,6 +137,9 @@ function Playground() {
                 giftRevealed={state.giftRevealed}
                 setGiftRevealed={state.setGiftRevealed}
                 toast={toast}
+                displayMusicUrl={state.displayMusicUrl}
+                displayMusicStartTime={state.displayMusicStartTime}
+                displayMusicEndTime={state.displayMusicEndTime}
             />
         );
     }
@@ -285,6 +288,14 @@ function Playground() {
                             previewKey={state.previewKey}
                             setPreviewKey={state.setPreviewKey}
                             handleCopyShareLink={actions.handleCopyShareLink}
+                            musicUrl={state.musicUrl}
+                            setMusicUrl={state.setMusicUrl}
+                            musicStartTime={state.musicStartTime}
+                            setMusicStartTime={state.setMusicStartTime}
+                            musicEndTime={state.musicEndTime}
+                            setMusicEndTime={state.setMusicEndTime}
+                            musicEnabled={state.musicEnabled}
+                            setMusicEnabled={state.setMusicEnabled}
                         />
                     )}
 
