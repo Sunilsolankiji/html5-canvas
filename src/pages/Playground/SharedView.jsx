@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import CanvasComponent from '../../components/CanvasComponent';
 import { CONFETTI_COLORS, HEART_EMOJIS } from './constants';
+import { BackgroundMusic } from './BackgroundMusic';
 import './SharedView.css';
 
 /**
@@ -182,6 +183,9 @@ export function SharedView({
     giftRevealed,
     setGiftRevealed,
     toast,
+    displayMusicUrl,
+    displayMusicStartTime,
+    displayMusicEndTime,
 }) {
     // Memoized random data for confetti effects
     const confettiData = useMemo(() => [...Array(50)].map(() => ({
@@ -257,6 +261,16 @@ export function SharedView({
 
             {/* Toast */}
             {toast.show && <Toast message={toast.message} />}
+
+            {/* Background Music */}
+            {displayMusicUrl && (
+                <BackgroundMusic
+                    url={displayMusicUrl}
+                    startTime={displayMusicStartTime}
+                    endTime={displayMusicEndTime}
+                    enabled={true}
+                />
+            )}
         </div>
     );
 }

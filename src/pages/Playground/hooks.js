@@ -48,12 +48,24 @@ export function usePlaygroundState() {
     const [selectedGradient, setSelectedGradient] = useState('rainbow');
     const [selectedPalette, setSelectedPalette] = useState('neon');
 
+    // Custom animation settings
+    const [customAnimation, setCustomAnimation] = useState('none');
+    const [animationIntensity, setAnimationIntensity] = useState(1);
+    const [animationDirection, setAnimationDirection] = useState(1); // 1 = forward, -1 = reverse
+    const [animationTiming, setAnimationTiming] = useState('afterDrawing'); // duringDrawing, afterDrawing, both
+
     // Export settings
     const [filename, setFilename] = useState('canvas-shape');
     const [exportFormat, setExportFormat] = useState('png');
     const [shareMessage, setShareMessage] = useState('');
     const [messageAnimation, setMessageAnimation] = useState('reveal');
     const [showSurprise, setShowSurprise] = useState(false);
+
+    // Music settings
+    const [musicUrl, setMusicUrl] = useState('');
+    const [musicStartTime, setMusicStartTime] = useState(0);
+    const [musicEndTime, setMusicEndTime] = useState(60);
+    const [musicEnabled, setMusicEnabled] = useState(false);
 
     // UI state
     const [error, setError] = useState('');
@@ -69,6 +81,9 @@ export function usePlaygroundState() {
     const [displayMessageAnimation, setDisplayMessageAnimation] = useState('reveal');
     const [displaySurprise, setDisplaySurprise] = useState(false);
     const [giftRevealed, setGiftRevealed] = useState(false);
+    const [displayMusicUrl, setDisplayMusicUrl] = useState('');
+    const [displayMusicStartTime, setDisplayMusicStartTime] = useState(0);
+    const [displayMusicEndTime, setDisplayMusicEndTime] = useState(60);
 
     return {
         // Basic settings
@@ -105,12 +120,24 @@ export function usePlaygroundState() {
         selectedGradient, setSelectedGradient,
         selectedPalette, setSelectedPalette,
 
+        // Custom animation settings
+        customAnimation, setCustomAnimation,
+        animationIntensity, setAnimationIntensity,
+        animationDirection, setAnimationDirection,
+        animationTiming, setAnimationTiming,
+
         // Export settings
         filename, setFilename,
         exportFormat, setExportFormat,
         shareMessage, setShareMessage,
         messageAnimation, setMessageAnimation,
         showSurprise, setShowSurprise,
+
+        // Music settings
+        musicUrl, setMusicUrl,
+        musicStartTime, setMusicStartTime,
+        musicEndTime, setMusicEndTime,
+        musicEnabled, setMusicEnabled,
 
         // UI state
         error, setError,
@@ -126,6 +153,9 @@ export function usePlaygroundState() {
         displayMessageAnimation, setDisplayMessageAnimation,
         displaySurprise, setDisplaySurprise,
         giftRevealed, setGiftRevealed,
+        displayMusicUrl, setDisplayMusicUrl,
+        displayMusicStartTime, setDisplayMusicStartTime,
+        displayMusicEndTime, setDisplayMusicEndTime,
     };
 }
 
@@ -141,6 +171,8 @@ export function useUrlParams(state) {
         setShowTrail, setShowPathTracer, setShowGrid, setShowFormula,
         setUseGradient, setSelectedGradient, setAnimationSpeed,
         setDisplayMessage, setDisplayMessageAnimation, setDisplaySurprise,
+        setCustomAnimation, setAnimationIntensity, setAnimationDirection, setAnimationTiming,
+        setDisplayMusicUrl, setDisplayMusicStartTime, setDisplayMusicEndTime,
     } = state;
 
     useEffect(() => {
@@ -174,6 +206,8 @@ export function useUrlParams(state) {
             'lw': (v) => setLineWidth(parseFloat(v)),
             'gi': (v) => setGlowIntensity(parseFloat(v)),
             'as': (v) => setAnimationSpeed(parseFloat(v)),
+            'ai': (v) => setAnimationIntensity(parseFloat(v)),
+            'ad': (v) => setAnimationDirection(parseFloat(v)),
         };
 
         Object.entries(paramSetters).forEach(([param, setter]) => {
@@ -189,6 +223,8 @@ export function useUrlParams(state) {
             'ls': setLineStyle,
             'gp': setSelectedGradient,
             'ma': setDisplayMessageAnimation,
+            'ca': setCustomAnimation,
+            'at': setAnimationTiming,
         };
 
         Object.entries(stringParams).forEach(([param, setter]) => {
@@ -227,6 +263,20 @@ export function useUrlParams(state) {
         const surpriseParam = searchParams.get('sur');
         if (surpriseParam === '1') {
             setDisplaySurprise(true);
+        }
+
+        // Music parameters
+        const musicUrlParam = searchParams.get('mu');
+        if (musicUrlParam) {
+            setDisplayMusicUrl(decodeURIComponent(musicUrlParam));
+        }
+        const musicStartParam = searchParams.get('mst');
+        if (musicStartParam) {
+            setDisplayMusicStartTime(parseFloat(musicStartParam));
+        }
+        const musicEndParam = searchParams.get('met');
+        if (musicEndParam) {
+            setDisplayMusicEndTime(parseFloat(musicEndParam));
         }
 
         return () => {
@@ -344,6 +394,10 @@ export function useCanvasDrawing(canvasRef, animationRef, state) {
             backgroundColor: state.backgroundColor,
             showGrid: state.showGrid,
             showFormula: state.showFormula,
+            customAnimation: state.customAnimation,
+            animationIntensity: state.animationIntensity,
+            animationDirection: state.animationDirection,
+            animationTiming: state.animationTiming,
             onError: (msg) => state.setError(msg),
         });
 
@@ -354,7 +408,8 @@ export function useCanvasDrawing(canvasRef, animationRef, state) {
         state.animateDrawing, state.animationSpeed, state.lineStyle,
         state.showGlow, state.glowIntensity, state.showTrail, state.showPathTracer,
         state.showGrid, state.showFormula, state.useGradient, state.selectedGradient,
-        state.backgroundColor, canvasRef, animationRef
+        state.backgroundColor, state.customAnimation, state.animationIntensity,
+        state.animationDirection, state.animationTiming, canvasRef, animationRef
     ]);
 
     return { drawShape, isPausedRef, isInitialMount };
@@ -436,6 +491,10 @@ export function usePlaygroundActions(canvasRef, animationRef, state, drawShape, 
                 useGradient: state.useGradient,
                 selectedGradient: state.selectedGradient,
                 animationSpeed: state.animationSpeed,
+                customAnimation: state.customAnimation,
+                animationIntensity: state.animationIntensity,
+                animationDirection: state.animationDirection,
+                animationTiming: state.animationTiming,
             },
             thumbnail,
             createdAt: Date.now(),
@@ -471,9 +530,16 @@ export function usePlaygroundActions(canvasRef, animationRef, state, drawShape, 
             ug: state.useGradient ? '1' : '0',
             gp: state.selectedGradient,
             as: state.animationSpeed.toString(),
+            ...(state.customAnimation !== 'none' && { ca: state.customAnimation }),
+            ...(state.customAnimation !== 'none' && { ai: state.animationIntensity.toString() }),
+            ...(state.customAnimation !== 'none' && { ad: state.animationDirection.toString() }),
+            ...(state.customAnimation !== 'none' && { at: state.animationTiming }),
             ...(state.shareMessage && { msg: encodeURIComponent(state.shareMessage) }),
             ...(state.shareMessage && { ma: state.messageAnimation }),
             ...(state.showSurprise && { sur: '1' }),
+            ...(state.musicEnabled && state.musicUrl && { mu: encodeURIComponent(state.musicUrl) }),
+            ...(state.musicEnabled && state.musicUrl && { mst: state.musicStartTime.toString() }),
+            ...(state.musicEnabled && state.musicUrl && { met: state.musicEndTime.toString() }),
         });
 
         const url = `${window.location.origin}${window.location.pathname}#/playground?${params.toString()}`;
@@ -517,6 +583,10 @@ export function usePlaygroundActions(canvasRef, animationRef, state, drawShape, 
         state.setShowFormula(false);
         state.setUseGradient(false);
         state.setLineStyle('solid');
+        state.setCustomAnimation('none');
+        state.setAnimationIntensity(1);
+        state.setAnimationDirection(1);
+        state.setAnimationTiming('afterDrawing');
     }, [state]);
 
     const handleRandomize = useCallback(() => {

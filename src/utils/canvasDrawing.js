@@ -198,6 +198,10 @@ export function drawParametricShape(params) {
     backgroundColor = '#0a0a0a',
     showGrid = false,
     showFormula = false,
+    customAnimation = 'none',
+    animationIntensity = 1,
+    animationDirection = 1,
+    animationTiming = 'afterDrawing', // 'duringDrawing', 'afterDrawing', 'both'
     onError,
   } = params;
 
@@ -226,7 +230,83 @@ export function drawParametricShape(params) {
   // Create gradient if needed
   const gradient = useGradient ? createGradientFromPreset(ctx, canvas, gradientPreset) : null;
 
+  // Animation time tracker for custom animations
+  let animTime = 0;
+
+  /**
+   * Apply custom animation transformations
+   * @param {CanvasRenderingContext2D} ctx - Canvas context
+   * @param {number} time - Animation time
+   * @param {string} animType - Animation type
+   * @param {number} intensity - Animation intensity
+   * @param {number} direction - Animation direction (1 or -1)
+   */
+  const applyCustomAnimation = (ctx, time, animType, intensity, direction) => {
+    const cx = canvas.width / 2;
+    const cy = canvas.height / 2;
+    const t = time * direction;
+
+    switch (animType) {
+      case 'rotate':
+        ctx.translate(cx, cy);
+        ctx.rotate(t * 0.02 * intensity);
+        ctx.translate(-cx, -cy);
+        break;
+      case 'pulse':
+        const pulseScale = 1 + Math.sin(t * 0.05 * intensity) * 0.15 * intensity;
+        ctx.translate(cx, cy);
+        ctx.scale(pulseScale, pulseScale);
+        ctx.translate(-cx, -cy);
+        break;
+      case 'breathe':
+        const breatheScale = 1 + Math.sin(t * 0.02 * intensity) * 0.1 * intensity;
+        const breatheY = Math.sin(t * 0.02 * intensity) * 5 * intensity;
+        ctx.translate(cx, cy + breatheY);
+        ctx.scale(breatheScale, breatheScale);
+        ctx.translate(-cx, -cy);
+        break;
+      case 'bounce':
+        const bounceY = Math.abs(Math.sin(t * 0.04 * intensity)) * 30 * intensity;
+        const squash = 1 + Math.abs(Math.sin(t * 0.04 * intensity + Math.PI / 2)) * 0.1;
+        ctx.translate(cx, cy - bounceY);
+        ctx.scale(1 / squash, squash);
+        ctx.translate(-cx, -cy);
+        break;
+      case 'wave':
+        const waveSkew = Math.sin(t * 0.03 * intensity) * 0.1 * intensity;
+        ctx.translate(cx, cy);
+        ctx.transform(1, waveSkew, waveSkew, 1, 0, 0);
+        ctx.translate(-cx, -cy);
+        break;
+      case 'spiral':
+        const spiralScale = 1 + Math.sin(t * 0.02 * intensity) * 0.2 * intensity;
+        const spiralRotate = t * 0.01 * intensity;
+        ctx.translate(cx, cy);
+        ctx.rotate(spiralRotate);
+        ctx.scale(spiralScale, spiralScale);
+        ctx.translate(-cx, -cy);
+        break;
+      case 'shake':
+        const shakeX = (Math.random() - 0.5) * 8 * intensity;
+        const shakeY = (Math.random() - 0.5) * 8 * intensity;
+        ctx.translate(shakeX, shakeY);
+        break;
+      case 'morph':
+        const morphX = 1 + Math.sin(t * 0.025 * intensity) * 0.15 * intensity;
+        const morphY = 1 + Math.cos(t * 0.025 * intensity) * 0.15 * intensity;
+        ctx.translate(cx, cy);
+        ctx.scale(morphX, morphY);
+        ctx.translate(-cx, -cy);
+        break;
+      default:
+        break;
+    }
+  };
+
   const draw = (progress) => {
+    // Save context state before transformations
+    ctx.save();
+
     // Trail effect: don't fully clear canvas
     if (showTrail) {
       ctx.fillStyle = backgroundColor.replace(/[^,]+(?=\))/, '0.05').includes('rgba')
@@ -239,9 +319,22 @@ export function drawParametricShape(params) {
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
 
-    // Draw grid if enabled
+    // Draw grid if enabled (before transformations)
     if (showGrid) {
       drawGrid(ctx, canvas);
+    }
+
+    // Determine if we should apply custom animation based on timing
+    const isDrawingComplete = progress >= 1;
+    const shouldAnimate = customAnimation && customAnimation !== 'none' && (
+      (animationTiming === 'duringDrawing' && !isDrawingComplete) ||
+      (animationTiming === 'afterDrawing' && isDrawingComplete) ||
+      (animationTiming === 'both')
+    );
+
+    // Apply custom animation transformation
+    if (shouldAnimate) {
+      applyCustomAnimation(ctx, animTime, customAnimation, animationIntensity, animationDirection);
     }
 
     const points = calculatePoints({
@@ -279,7 +372,10 @@ export function drawParametricShape(params) {
       drawPathTracer(ctx, points[points.length - 1], strokeColor);
     }
 
-    // Draw formula overlay
+    // Restore context state (removes transformations)
+    ctx.restore();
+
+    // Draw formula overlay (after restore so it's not transformed)
     if (showFormula) {
       ctx.fillStyle = 'rgba(0,0,0,0.7)';
       ctx.fillRect(10, 10, 300, 70);
@@ -294,11 +390,20 @@ export function drawParametricShape(params) {
 
   if (animated && animateDrawing) {
     let progress = 0;
+    const hasCustomAnimation = customAnimation && customAnimation !== 'none';
+    // Determine if we need to continue animating after drawing completes
+    const shouldContinueAfterDrawing = hasCustomAnimation &&
+      (animationTiming === 'afterDrawing' || animationTiming === 'both');
+
     const animate = () => {
       if (isPausedRef?.current) {
         animationRef.current = requestAnimationFrame(animate);
         return;
       }
+
+      // Increment animation time for custom animations
+      animTime += animationSpeed;
+
       progress += 0.01 * animationSpeed;
       if (progress > 1) {
         progress = 1;
@@ -306,13 +411,28 @@ export function drawParametricShape(params) {
       draw(progress);
       if (progress < 1) {
         animationRef.current = requestAnimationFrame(animate);
-      } else if (showPathTracer) {
-        // Continue animating path tracer in a loop
-        progress = 0;
+      } else if (showPathTracer || shouldContinueAfterDrawing) {
+        // Continue animating for path tracer or custom animations (if timing allows)
+        if (showPathTracer) {
+          progress = 0;
+        }
         animationRef.current = requestAnimationFrame(animate);
       }
     };
     animate();
+  } else if (customAnimation && customAnimation !== 'none' &&
+             (animationTiming === 'afterDrawing' || animationTiming === 'both')) {
+    // If not animating drawing but has custom animation that should run after drawing
+    const animateCustom = () => {
+      if (isPausedRef?.current) {
+        animationRef.current = requestAnimationFrame(animateCustom);
+        return;
+      }
+      animTime += animationSpeed;
+      draw(1);
+      animationRef.current = requestAnimationFrame(animateCustom);
+    };
+    animateCustom();
   } else {
     draw(1);
   }
